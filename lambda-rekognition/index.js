@@ -15,7 +15,7 @@ exports.handler = async (event) => {
                     Name: key
                 }
             },
-            MaxLabels: 10
+            MaxLabels: 5
         };
 
         const response = await rekognition.detectLabels(params).promise();
