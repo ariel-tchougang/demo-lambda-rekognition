@@ -12,7 +12,7 @@ echo "Define the stack name"
 lambda_stack_name="demo-rekognition-lambda-stack"
 
 echo "Retrieve the bucket name"
-bucket_name=$(aws cloudformation describe-stacks --stack-name $lambda_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionBucketName'].OutputValue" --output text)
+bucket_name=$(aws cloudformation describe-stacks --stack-name $lambda_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionBucket'].OutputValue" --output text)
 
 echo "Empty the S3 bucket"
 aws s3 rm s3://$bucket_name --recursive --region $AWS_REGION

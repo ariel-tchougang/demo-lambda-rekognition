@@ -21,11 +21,11 @@ sam deploy --region $AWS_REGION
 aws cloudformation wait stack-create-complete --stack-name $demo_stack_name --region $AWS_REGION
 
 # Retrieve the bucket name
-bucket_name=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionBucketName'].OutputValue" --output text)
+bucket_name=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionBucket'].OutputValue" --output text)
 lambda_arn=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionFunction'].OutputValue" --output text)
 
-echo "Creating images folder"
-aws s3api put-object --bucket $bucket_name --key images/
+echo "Adding images folder with test image"
+aws s3api put-object --bucket $bucket_name --key images/random-image.png --body ./images/element-1.PNG
 
 echo "Managing notification.json"
 rm -f notification.json
@@ -43,3 +43,7 @@ aws lambda add-permission \
 
 echo "Updating the SAM template to add s3 Event notification"
 aws s3api put-bucket-notification-configuration --region $AWS_REGION --bucket $bucket_name --notification-configuration file://notification.json
+
+echo "Deleting notification.json"
+rm -f notification.json
+
