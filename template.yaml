@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application that uses Rekognition and publishes results to an SNS topic.
+Resources:
+  DemoRekognitionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda-rekognition
+      Handler: index.handler
+      Runtime: nodejs16.x
+      Environment: 
+        Variables: 
+          SNS_TOPIC: !Ref DemoRekognitionSNSTopic
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref DemoRekognitionBucket
+            Events: s3:ObjectCreated:*
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - rekognition:DetectLabels
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Ref DemoRekognitionSNSTopic
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:GetObjectVersion
+              Resource: !Sub "arn:aws:s3:::${DemoRekognitionBucket}/*"
+
+  DemoRekognitionSNSTopic:
+    Type: AWS::SNS::Topic
+
+  DemoRekognitionSNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: demo.lambda.rekognition@mailinator.com
+      Protocol: email
+      TopicArn: !Ref DemoRekognitionSNSTopic
+
+  DemoRekognitionBucket:
+    Type: AWS::S3::Bucket
+  
