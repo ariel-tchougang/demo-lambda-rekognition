@@ -4,10 +4,12 @@ Demo of an AWS Lambda function that:
 - send the created object to Amazon Rekognition for label detection
 - retrieves the results from Amazon Rekognition and publish them in an SNS topic
 
+Here's the expected workflow:
+![Alt text](/images/workflow.png?raw=true "Test workflow")
 
 # Getting started
 
-## What you need
+## What you'll need
 
 * AWS SAM CLI
 * AWS CLI
@@ -16,7 +18,6 @@ Demo of an AWS Lambda function that:
 All provided scripts were tested under Amazon Linux 2.
 
 You'll need to mak ethem executable.
-
 
 ```bash
 chmod 755 *.sh
@@ -45,6 +46,21 @@ Run the script:
 ```bash
 ./demo-deploy.sh AWS_REGION
 ```
+
+This script will create:
+* An S3 bucket
+* A prefix (folder) "images/" where images are to be uploaded
+* A Lambda function that can process an S3 event notification and send data to Rekognition
+* An S3 event notification on objects created with the previous Lambda as target
+* An SNS topic, with an subscription on endpoint demo.lambda.rekognition@mailinator.com (go to mailinator.com public inbox to validate the subscription)
+
+
+## Test in AWS
+
+* Upload an image file inside the folder (prefix) images/ from the S3 bucket. There are some sample images files in project images folder.
+* Check the function logs on CloudWatch Logs to verify it has been called
+* Check you received a result email (at demo.lambda.rekognition@mailinator.com or any other email that you would have subscribed beforehand to the SNS topic)
+
 
 ## Cleanup the application in AWS
 
