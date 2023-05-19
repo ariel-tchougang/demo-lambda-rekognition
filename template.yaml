@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: An AWS Serverless Application that uses Rekognition and publishes results to an SNS topic.
+
 Resources:
   DemoRekognitionFunction:
     Type: AWS::Serverless::Function
@@ -11,12 +12,6 @@ Resources:
       Environment: 
         Variables: 
           SNS_TOPIC: !Ref DemoRekognitionSNSTopic
-      Events:
-        S3Event:
-          Type: S3
-          Properties:
-            Bucket: !Ref DemoRekognitionBucket
-            Events: s3:ObjectCreated:*
       Policies:
         - Version: '2012-10-17'
           Statement:
@@ -46,4 +41,12 @@ Resources:
 
   DemoRekognitionBucket:
     Type: AWS::S3::Bucket
-  
+
+Outputs:
+  DemoRekognitionBucket:
+    Description: The name of the S3 bucket
+    Value: !Ref DemoRekognitionBucket
+
+  DemoRekognitionFunction:
+    Description: "DemoRekognitionFunction ARN"
+    Value: !GetAtt DemoRekognitionFunction.Arn

@@ -4,7 +4,7 @@ version = 0.1
 
 [default]
 [default.global.parameters]
-stack_name = "demo-lambda-rekognition-stack"
+stack_name = "demo-rekognition-lambda-stack"
 
 [default.build.parameters]
 cached = true
@@ -15,7 +15,7 @@ lint = true
 
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
-s3_prefix = "demo-lambda-rekognition"
+s3_prefix = "demo-rekognition-lambda"
 confirm_changeset = false
 resolve_s3 = true
 
