@@ -17,7 +17,7 @@ Here's the expected workflow:
  
 All provided scripts were tested under Amazon Linux 2.
 
-You'll need to mak ethem executable.
+You'll need to make them executable.
 
 ```bash
 chmod 755 *.sh
