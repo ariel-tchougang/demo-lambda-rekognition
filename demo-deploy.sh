@@ -23,9 +23,10 @@ aws cloudformation wait stack-create-complete --stack-name $demo_stack_name --re
 # Retrieve the bucket name
 bucket_name=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionBucket'].OutputValue" --output text)
 lambda_arn=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionFunction'].OutputValue" --output text)
+image_key=images/random-image.png
 
 echo "Adding images folder with test image"
-aws s3api put-object --bucket $bucket_name --key images/random-image.png --body ./images/element-1.PNG
+aws s3api put-object --bucket $bucket_name --key $image_key --body ./images/element-1.PNG
 
 echo "Managing notification.json"
 rm -f notification.json
@@ -46,4 +47,17 @@ aws s3api put-bucket-notification-configuration --region $AWS_REGION --bucket $b
 
 echo "Deleting notification.json"
 rm -f notification.json
+
+echo "Preparing event payload"
+mkdir tests
+cp ./templates/s3-putObject.json ./tests/s3-putObject.json
+sed -i "s|REPLACE_WITH_BUCKET_NAME|$bucket_name|g" ./tests/s3-putObject.json
+sed -i "s|REPLACE_WITH_IMAGE_KEY|$image_key|g" ./tests/s3-putObject.json
+
+echo "Test invocation"
+aws lambda invoke --function-name $lambda_arn --cli-binary-format raw-in-base64-out --payload file://tests/s3-putObject.json --invocation-type Event --region $AWS_REGION response.json
+
+echo "Cleaning up"
+rm -rf tests response.json
+
 
