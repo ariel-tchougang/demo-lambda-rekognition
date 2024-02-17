@@ -14,7 +14,7 @@ Here's the expected workflow:
 * AWS SAM CLI
 * AWS CLI
 * npm
-* Rekognition service regional availability
+* Rekognition service regional availability (as of January 2024)
     * Asia Pacific (Mumbai)
     * Europe (London)
     * Europe (Ireland)
