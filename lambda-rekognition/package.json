@@ -1,12 +1,19 @@
 {
   "name": "lambda-rekognition",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "2.0.0",
+  "description": "lambda-rekognition demo with Nodejs 18.x",
+  "private": true,
+  "main": "index.mjs",
+  "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "aws-xray-sdk-core": "^3.5.3",
+    "@aws-sdk/client-sns": "^3.478.0",
+    "@aws-sdk/client-rekognition": "^3.478.0"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Ariel Tchougang",
+  "license": "MIT"
 }

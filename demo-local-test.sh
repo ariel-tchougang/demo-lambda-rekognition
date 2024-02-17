@@ -10,6 +10,9 @@ BUCKET_NAME=$1
 IMAGE_KEY=$2
 SNS_TOPIC_ARN=$3
 
+echo "Performing sam build"
+sam build
+
 echo "Preparing event payload"
 mkdir tests
 cp ./templates/s3-putObject.json ./tests/s3-putObject.json

@@ -8,7 +8,8 @@ Resources:
     Properties:
       CodeUri: lambda-rekognition
       Handler: index.handler
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
+      Tracing: Active
       Environment: 
         Variables: 
           SNS_TOPIC: !Ref DemoRekognitionSNSTopic
