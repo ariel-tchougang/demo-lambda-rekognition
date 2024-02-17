@@ -23,6 +23,7 @@ aws cloudformation wait stack-create-complete --stack-name $demo_stack_name --re
 # Retrieve the bucket name
 bucket_name=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionBucket'].OutputValue" --output text)
 lambda_arn=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionFunction'].OutputValue" --output text)
+lambda_role_arn=$(aws cloudformation describe-stacks --stack-name $demo_stack_name --region $AWS_REGION --query "Stacks[0].Outputs[?OutputKey=='DemoRekognitionFunctionRole'].OutputValue" --output text)
 image_key=images/random-image.png
 
 echo "Adding images folder with test image"
@@ -47,6 +48,18 @@ aws s3api put-bucket-notification-configuration --region $AWS_REGION --bucket $b
 
 echo "Deleting notification.json"
 rm -f notification.json
+
+echo "Managing bucket-policy.json"
+rm -f bucket-policy.json
+cp ./templates/bucket-policy.json bucket-policy.json
+sed -i "s|REPLACE_WITH_LAMBDA_FUNCTION_ROLE_ARN|$lambda_role_arn|g" bucket-policy.json
+sed -i "s|REPLACE_WITH_BUCKET_NAME|$bucket_name|g" bucket-policy.json
+
+echo "Adding bucket policy"
+aws s3api put-bucket-policy --bucket $bucket_name --policy file://bucket-policy.json
+
+echo "Deleting bucket-policy.json"
+rm -f bucket-policy.json
 
 echo "Preparing event payload"
 mkdir tests

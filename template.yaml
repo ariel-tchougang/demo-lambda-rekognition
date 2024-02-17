@@ -3,6 +3,73 @@ Transform: AWS::Serverless-2016-10-31
 Description: An AWS Serverless Application that uses Rekognition and publishes results to an SNS topic.
 
 Resources:
+  LambdaLoggingPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows basic logging actions for Lambda functions
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: '*'
+            
+  RekognitionPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows to call detect labels
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - rekognition:DetectLabels
+            Resource: '*'
+            
+  SnsPublishPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows to publish in DemoRekognitionSNSTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sns:Publish
+            Resource: !Ref DemoRekognitionSNSTopic
+            
+  DemoRekognitionBucketGetObjectPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows to get objects from DemoRekognitionBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:GetObjectVersion
+            Resource: !Sub "arn:aws:s3:::${DemoRekognitionBucket}/images/*"
+            
+  DemoRekognitionFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Ref LambdaLoggingPolicy
+        - !Ref RekognitionPolicy
+        - !Ref SnsPublishPolicy
+        - !Ref DemoRekognitionBucketGetObjectPolicy
+            
   DemoRekognitionFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -13,31 +80,43 @@ Resources:
       Environment: 
         Variables: 
           SNS_TOPIC: !Ref DemoRekognitionSNSTopic
-      Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - rekognition:DetectLabels
-              Resource: "*"
-            - Effect: Allow
-              Action:
-                - sns:Publish
-              Resource: !Ref DemoRekognitionSNSTopic
-            - Effect: Allow
-              Action:
-                - s3:GetObject
-                - s3:GetObjectVersion
-              Resource: !Sub "arn:aws:s3:::${DemoRekognitionBucket}/*"
+      Role: !GetAtt DemoRekognitionFunctionRole.Arn
+
+  DemoRekognitionSQSQueue:
+    Type: AWS::SQS::Queue
+    
+  DemoRekognitionSQSQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref DemoRekognitionSQSQueue
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowDemoRekognitionSNSTopicToSendMessage
+            Effect: Allow
+            Principal: '*'
+            Action: sqs:SendMessage
+            Resource: !GetAtt DemoRekognitionSQSQueue.Arn
+            Condition:
+              ArnEquals:
+                "aws:SourceArn": !Ref DemoRekognitionSNSTopic
 
   DemoRekognitionSNSTopic:
     Type: AWS::SNS::Topic
 
-  DemoRekognitionSNSSubscription:
+  DemoRekognitionSNSEmailSubscription:
     Type: AWS::SNS::Subscription
     Properties:
       Endpoint: demo.lambda.rekognition@mailinator.com
       Protocol: email
+      TopicArn: !Ref DemoRekognitionSNSTopic
+
+  DemoRekognitionSNSSQSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt DemoRekognitionSQSQueue.Arn
+      Protocol: sqs
       TopicArn: !Ref DemoRekognitionSNSTopic
 
   DemoRekognitionBucket:
@@ -51,3 +130,7 @@ Outputs:
   DemoRekognitionFunction:
     Description: "DemoRekognitionFunction ARN"
     Value: !GetAtt DemoRekognitionFunction.Arn
+
+  DemoRekognitionFunctionRole:
+    Description: "DemoRekognitionFunction Role"
+    Value: !GetAtt DemoRekognitionFunctionRole.Arn
