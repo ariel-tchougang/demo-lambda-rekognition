@@ -62,6 +62,13 @@ This script will create:
 * Check you received a result email (at demo.lambda.rekognition@mailinator.com or any other email that you would have subscribed beforehand to the SNS topic)
 
 
+## Checkout the AWS X-Ray Trace map
+
+* Go to CloudWatch
+* On the left menu expand X-Ray Traces, and click on Trace Map
+* Observe the application architecture
+
+
 ## Cleanup the application in AWS
 
 Run the script:
