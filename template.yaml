@@ -54,6 +54,23 @@ Resources:
               - s3:GetObjectVersion
             Resource: !Sub "arn:aws:s3:::${DemoRekognitionBucket}/images/*"
             
+  AWSXrayWriteOnlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows X-Ray write access
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Sid: AWSXrayWriteOnlyAccess
+            Action:
+              - xray:PutTraceSegments
+              - xray:PutTelemetryRecords
+              - xray:GetSamplingRules
+              - xray:GetSamplingTargets
+              - xray:GetSamplingStatisticSummaries
+            Resource: '*'
+            
   DemoRekognitionFunctionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -69,6 +86,7 @@ Resources:
         - !Ref RekognitionPolicy
         - !Ref SnsPublishPolicy
         - !Ref DemoRekognitionBucketGetObjectPolicy
+        - !Ref AWSXrayWriteOnlyPolicy
             
   DemoRekognitionFunction:
     Type: AWS::Serverless::Function
