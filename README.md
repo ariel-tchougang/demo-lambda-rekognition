@@ -23,6 +23,22 @@ You'll need to make them executable.
 chmod 755 *.sh
 ```
 
+> This demo will work only in a region where the Rekognition service is deployed
+    Asia Pacific (Mumbai)
+    Europe (London)
+    Europe (Ireland)
+    Asia Pacific (Seoul)
+    Asia Pacific (Tokyo)
+    Israel (Tel Aviv)
+    Canada (Central)
+    Asia Pacific (Singapore)
+    Asia Pacific (Sydney)
+    Europe (Frankfurt)
+    US East (N. Virginia)
+    US East (Ohio)
+    US West (N. California)
+    US West (Oregon)
+
 ## Test the application locally
 
 Run the script:
