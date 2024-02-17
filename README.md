@@ -13,6 +13,7 @@ Here's the expected workflow:
 
 * AWS SAM CLI
 * AWS CLI
+* Docker (to perform local testing with SAM CLI)
 * npm
 * Rekognition service regional availability (as of January 2024)
     * Asia Pacific (Mumbai)
