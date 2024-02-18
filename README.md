@@ -76,9 +76,9 @@ This script will create:
 
 * Upload an image file inside the folder (prefix) images/ from the S3 bucket. There are some sample images files in project images folder.
 * Check the function logs on CloudWatch Logs to verify it has been called
-* Check you received a result: 
-	* message sent in an SQS queue
-	* email (at demo.lambda.rekognition@mailinator.com or any other email that you would have subscribed beforehand to the SNS topic)
+* Check you received a result 
+	* Message sent in an SQS queue (deployed with demo CloudFormation template)
+	* Email (at demo.lambda.rekognition@mailinator.com or any other email that you would have subscribed beforehand to the SNS topic)
 
 
 ## Checkout the AWS X-Ray Trace map
