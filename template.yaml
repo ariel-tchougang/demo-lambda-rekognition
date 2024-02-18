@@ -6,7 +6,7 @@ Resources:
   LambdaLoggingPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      Description: Allows basic logging actions for Lambda functions
+      Description: AllowsBasicLoggingActions
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -20,7 +20,7 @@ Resources:
   RekognitionPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      Description: Allows to call detect labels
+      Description: AllowsDetectLabels
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -32,7 +32,7 @@ Resources:
   SnsPublishPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      Description: Allows to publish in DemoRekognitionSNSTopic
+      Description: AllowsPublishInDemoRekognitionSNSTopic
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -43,8 +43,9 @@ Resources:
             
   DemoRekognitionBucketGetObjectPolicy:
     Type: AWS::IAM::ManagedPolicy
+    DependsOn: DemoRekognitionBucket
     Properties:
-      Description: Allows to get objects from DemoRekognitionBucket
+      Description: AllowsGetObjectsFromDemoRekognitionBucket
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
