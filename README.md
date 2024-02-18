@@ -5,7 +5,7 @@ Demo of an AWS Lambda function that:
 - retrieves the results from Amazon Rekognition and publish them in an SNS topic
 
 Here's the expected workflow:
-![Alt text](/images/workflow.png?raw=true "Test workflow")
+![Alt text](/images/workflow.png?raw=true "Architecture workflow")
 
 # Getting started
 
@@ -85,6 +85,7 @@ This script will create:
 * On the left menu expand X-Ray Traces, and click on Trace Map
 * Observe the application architecture
 
+![Alt text](/images/xray-map.png?raw=true "X-Ray Map")
 
 ## Cleanup the application in AWS
 
