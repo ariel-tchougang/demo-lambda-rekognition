@@ -1,0 +1,14 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowGetObjectDemoRekognitionFunction",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "REPLACE_WITH_LAMBDA_FUNCTION_ROLE_ARN"
+            },
+            "Action": "s3:Get*",
+            "Resource": "arn:aws:s3:::REPLACE_WITH_BUCKET_NAME/images/*"
+        }
+    ]
+}
